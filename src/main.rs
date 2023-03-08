@@ -1,5 +1,4 @@
 use std::f32::consts::PI;
-
 use bevy::prelude::*;
 
 const TILE_SIZE:f32 = 50.0;
@@ -47,9 +46,6 @@ struct Animation {
     state: AnimationState
 }
 
-#[derive(Component, Deref, DerefMut)]
-struct AnimationTimer(Timer);
-
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest())) // prevents blurry sprites
@@ -58,7 +54,6 @@ fn main() {
         .add_system(frog_controller)
         .run();
 }
-
 
 
 fn setup(
@@ -95,7 +90,6 @@ fn spawn_frog(
             state: AnimationState::Stop,
             frame_count: 6, 
             timer: Timer::from_seconds(0.05, TimerMode::Repeating)});
-
 }
 
 fn frog_controller(
@@ -103,9 +97,7 @@ fn frog_controller(
     time: Res<Time>,
     mut frog_query: Query<(&mut Transform, &mut Animation, &mut TextureAtlasSprite, &mut Frog)>,
 ) {
-
     for (mut frog_transform, mut animation, mut sprite, mut frog) in frog_query.iter_mut() {
-        
         match animation.state {
             AnimationState::Start => {
                 sprite.index = 0;

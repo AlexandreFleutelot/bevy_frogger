@@ -8,7 +8,11 @@ pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_frog)
-            .add_systems((frog_controller, confine_player).chain());
+        app
+        .add_startup_system(spawn_frog)
+        .add_systems((
+            frog_controller, 
+            confine_player
+        ).chain());
     }
 }

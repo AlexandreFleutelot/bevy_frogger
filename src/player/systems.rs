@@ -3,7 +3,7 @@ use bevy::window::PrimaryWindow;
 use std::f32::consts::PI;
 
 use super::components::Frog;
-use crate::{GRID_SIZE, TILE_SIZE};
+use crate::{GRID_SIZE, TILE_SIZE, TOP_BAR};
 
 pub fn spawn_frog(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
@@ -60,7 +60,7 @@ pub fn confine_player(
         if frog_transform.translation.y < 0.0 {
             frog_transform.translation.y += TILE_SIZE;
         }
-        if frog_transform.translation.y > window.height() {
+        if frog_transform.translation.y > window.height() - TOP_BAR {
             frog_transform.translation.y -= TILE_SIZE;
         }
     }

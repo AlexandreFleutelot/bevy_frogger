@@ -1,14 +1,18 @@
 pub mod components;
+pub mod events;
 mod player;
+mod cars;
 mod systems;
 
 use bevy::prelude::*;
 
 use player::PlayerPlugin;
-use systems::spawn_camera;
+use cars::CarPlugin;
+use systems::*;
 
-const GRID_SIZE: (f32, f32) = (21.0, 16.0);
+const GRID_SIZE: (f32, f32) = (21.0, 14.0);
 const TILE_SIZE: f32 = 50.0;
+const TOP_BAR: f32 = 50.0;
 
 fn main() {
     let window = Window {
@@ -27,6 +31,9 @@ fn main() {
                 }),
         )
         .add_startup_system(spawn_camera)
+//        .add_startup_system(spawn_background)
         .add_plugin(PlayerPlugin)
+        .add_plugin(CarPlugin)
+        .add_system(move_items)
         .run();
 }

@@ -1,2 +1,3 @@
-
-pub struct GameOverEvent;
+pub struct GameOverEvent {
+    pub message: String,
+}

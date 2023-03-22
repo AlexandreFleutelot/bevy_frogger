@@ -1,14 +1,19 @@
-pub mod components;
-pub mod events;
-mod player;
-mod cars;
-mod systems;
-
 use bevy::prelude::*;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use player::PlayerPlugin;
-use cars::CarPlugin;
+pub mod components;
+
+pub mod events;
+use events::GameOverEvent;
+
+mod systems;
 use systems::*;
+
+mod player;
+use player::PlayerPlugin;
+
+mod cars;
+use cars::CarPlugin;
 
 const GRID_SIZE: (f32, f32) = (21.0, 14.0);
 const TILE_SIZE: f32 = 50.0;
@@ -30,10 +35,13 @@ fn main() {
                     ..default()
                 }),
         )
+        .add_plugin(WorldInspectorPlugin::new())
+        .add_event::<GameOverEvent>()
         .add_startup_system(spawn_camera)
-//        .add_startup_system(spawn_background)
+        .add_startup_system(spawn_background)
         .add_plugin(PlayerPlugin)
         .add_plugin(CarPlugin)
         .add_system(move_items)
+        .add_system(game_over)
         .run();
 }

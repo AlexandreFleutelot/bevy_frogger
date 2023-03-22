@@ -3,11 +3,11 @@ use bevy::window::PrimaryWindow;
 use std::f32::consts::PI;
 
 use super::components::Frog;
-use crate::{GRID_SIZE, TILE_SIZE, TOP_BAR};
+use crate::{components::SpriteSize, GRID_SIZE, TILE_SIZE, TOP_BAR};
 
 pub fn spawn_frog(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands
-        .spawn(SpriteBundle {
+    commands.spawn((
+        SpriteBundle {
             texture: asset_server.load("simple_frog.png"),
             transform: Transform {
                 translation: Vec3 {
@@ -20,8 +20,10 @@ pub fn spawn_frog(mut commands: Commands, asset_server: Res<AssetServer>) {
                 scale: Vec3::ONE,
             },
             ..default()
-        })
-        .insert(Frog { active: true });
+        },
+        Frog { active: true },
+        SpriteSize(Vec2::new(50., 50.)),
+    ));
 }
 
 pub fn frog_controller(kb: Res<Input<KeyCode>>, mut frog_query: Query<(&Frog, &mut Transform)>) {

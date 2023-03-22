@@ -5,8 +5,7 @@ use bevy::prelude::*;
 
 use self::systems::*;
 
-const SPAWN_SHIFT: f32 = 100.;
-const DESPAWN_SHIFT: f32 = 150.;
+const CAR_SPRITE_SCALE: f32 = 0.7;
 
 pub struct CarPlugin;
 

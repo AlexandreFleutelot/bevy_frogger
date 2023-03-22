@@ -4,11 +4,13 @@ use bevy::prelude::*;
 use bevy::sprite::collide_aabb::collide;
 use bevy::window::PrimaryWindow;
 
-use super::{components::*, DESPAWN_SHIFT, SPAWN_SHIFT};
 use crate::components::{SpriteSize, Velocity};
 use crate::events::GameOverEvent;
 use crate::player::components::Frog;
-use crate::TILE_SIZE;
+use crate::{DESPAWN_SHIFT, SPAWN_SHIFT, TILE_SIZE};
+
+use super::components::*;
+use super::CAR_SPRITE_SCALE;
 
 pub fn set_car_spawner(
     mut commands: Commands,
@@ -22,10 +24,11 @@ pub fn set_car_spawner(
         transform: Transform {
             translation: Vec3::new(-SPAWN_SHIFT, 1.5 * TILE_SIZE as f32, 0.),
             rotation: Quat::from_rotation_z(0.),
-            scale: Vec3::ONE * 0.7,
+            scale: Vec3::ONE * CAR_SPRITE_SCALE,
         },
         timer: Timer::from_seconds(3.8, TimerMode::Repeating),
         velocity: Vec3::new(70., 0., 0.),
+        size: Vec2::new(130., 70.) * CAR_SPRITE_SCALE,
     });
 
     commands.spawn(CarSpawner {
@@ -33,10 +36,11 @@ pub fn set_car_spawner(
         transform: Transform {
             translation: Vec3::new(window.width() + SPAWN_SHIFT, 2.5 * TILE_SIZE as f32, 0.),
             rotation: Quat::from_rotation_z(PI),
-            scale: Vec3::ONE * 0.7,
+            scale: Vec3::ONE * CAR_SPRITE_SCALE,
         },
         timer: Timer::from_seconds(7.2, TimerMode::Repeating),
         velocity: Vec3::new(-50., 0., 0.),
+        size: Vec2::new(180., 70.) * CAR_SPRITE_SCALE,
     });
 
     commands.spawn(CarSpawner {
@@ -44,10 +48,11 @@ pub fn set_car_spawner(
         transform: Transform {
             translation: Vec3::new(-SPAWN_SHIFT, 3.5 * TILE_SIZE as f32, 0.),
             rotation: Quat::from_rotation_z(0.),
-            scale: Vec3::ONE * 0.7,
+            scale: Vec3::ONE * CAR_SPRITE_SCALE,
         },
         timer: Timer::from_seconds(5.1, TimerMode::Repeating),
         velocity: Vec3::new(60., 0., 0.),
+        size: Vec2::new(130., 70.) * CAR_SPRITE_SCALE,
     });
 
     commands.spawn(CarSpawner {
@@ -55,10 +60,11 @@ pub fn set_car_spawner(
         transform: Transform {
             translation: Vec3::new(window.width() + SPAWN_SHIFT, 4.5 * TILE_SIZE as f32, 0.),
             rotation: Quat::from_rotation_z(PI),
-            scale: Vec3::ONE * 0.7,
+            scale: Vec3::ONE * CAR_SPRITE_SCALE,
         },
         timer: Timer::from_seconds(4.3, TimerMode::Repeating),
         velocity: Vec3::new(-90., 0., 0.),
+        size: Vec2::new(130., 70.) * CAR_SPRITE_SCALE,
     });
 
     commands.spawn(CarSpawner {
@@ -66,10 +72,11 @@ pub fn set_car_spawner(
         transform: Transform {
             translation: Vec3::new(-SPAWN_SHIFT, 5.5 * TILE_SIZE as f32, 0.),
             rotation: Quat::from_rotation_z(0.),
-            scale: Vec3::ONE * 0.7,
+            scale: Vec3::ONE * CAR_SPRITE_SCALE,
         },
         timer: Timer::from_seconds(4.7, TimerMode::Repeating),
         velocity: Vec3::new(75., 0., 0.),
+        size: Vec2::new(290., 70.) * CAR_SPRITE_SCALE,
     });
 }
 
@@ -79,6 +86,7 @@ pub fn spawn_cars(
     time: Res<Time>,
 ) {
     for mut car_spawner in car_spawner_query.iter_mut() {
+        debug!("{}", car_spawner.size);
         car_spawner.timer.tick(time.delta());
         if car_spawner.timer.just_finished() {
             commands.spawn((
@@ -87,9 +95,9 @@ pub fn spawn_cars(
                     texture: car_spawner.sprite.clone(),
                     ..default()
                 },
-                Velocity(car_spawner.velocity),
                 Car,
-                SpriteSize(Vec2::new(50., 50.)),
+                Velocity(car_spawner.velocity),
+                SpriteSize(car_spawner.size),
             ));
         }
     }

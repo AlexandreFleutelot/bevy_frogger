@@ -18,12 +18,15 @@ use cars::CarPlugin;
 pub mod trunks;
 use trunks::TrunkPlugin;
 
+pub mod turtles;
+use turtles::TurtlePlugin;
+
 const GRID_SIZE: (f32, f32) = (21.0, 14.0);
 const TILE_SIZE: f32 = 50.0;
 const TOP_BAR: f32 = 50.0;
 
-const SPAWN_SHIFT: f32 = 180.;
-const DESPAWN_SHIFT: f32 = 200.;
+const SPAWN_SHIFT: f32 = 200.;
+const DESPAWN_SHIFT: f32 = 400.;
 
 fn main() {
     let window = Window {
@@ -48,6 +51,7 @@ fn main() {
         .add_plugin(PlayerPlugin)
         .add_plugin(CarPlugin)
         .add_plugin(TrunkPlugin)
+        .add_plugin(TurtlePlugin)
         .add_system(move_items)
         .add_system(game_over)
         .run();

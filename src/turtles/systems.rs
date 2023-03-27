@@ -11,11 +11,10 @@ use super::components::*;
 use super::TURTLE_SPRITE_SCALE;
 
 pub fn set_turtle_spawner(
-    mut commands: Commands, 
+    mut commands: Commands,
     asset_server: Res<AssetServer>,
     window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
-
     let window = window_query.get_single().unwrap();
 
     commands.spawn(TurtleSpawner {
@@ -49,13 +48,13 @@ pub fn spawn_turtles(
     time: Res<Time>,
 ) {
     for mut turtle_spawner in turtle_spawner_query.iter_mut() {
-        debug!("{}", turtle_spawner.size);
+
         turtle_spawner.timer.tick(time.delta());
         if turtle_spawner.timer.just_finished() {
             for i in 0..3 {
-                let mut transform =  turtle_spawner.transform.clone();
+                let mut transform = turtle_spawner.transform.clone();
                 transform.translation.x += turtle_spawner.size.x * i as f32;
-                info!("{}",transform.translation);
+
                 commands.spawn((
                     SpriteBundle {
                         transform: transform,
@@ -67,7 +66,6 @@ pub fn spawn_turtles(
                     SpriteSize(turtle_spawner.size),
                 ));
             }
-            
         }
     }
 }

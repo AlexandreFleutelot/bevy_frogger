@@ -1,9 +1,15 @@
 use bevy::prelude::*;
+use bevy::sprite::collide_aabb::collide;
 use bevy::window::PrimaryWindow;
 use std::f32::consts::PI;
 
 use super::components::Frog;
-use crate::{components::SpriteSize, GRID_SIZE, TILE_SIZE, TOP_BAR};
+use crate::components::SpriteSize;
+use crate::events::GameOverEvent;
+use crate::{GRID_SIZE, TILE_SIZE, TOP_BAR};
+
+use crate::trunks::components::Trunk;
+use crate::turtles::components::Turtle;
 
 pub fn spawn_frog(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
@@ -64,6 +70,48 @@ pub fn confine_player(
         }
         if frog_transform.translation.y > window.height() - TOP_BAR {
             frog_transform.translation.y -= TILE_SIZE;
+        }
+    }
+}
+
+pub fn player_fall_water(
+    frog_query: Query<(&Frog, &SpriteSize, &Transform), With<Frog>>,
+    trunk_query: Query<(&SpriteSize, &Transform), With<Trunk>>,
+    turtle_query: Query<(&SpriteSize, &Transform), With<Turtle>>,
+    mut ev_gameover: EventWriter<GameOverEvent>,
+) {
+    for (frog, frog_size, frog_transform) in frog_query.iter() {
+        if frog.active {
+            let frog_pos: Vec3 = frog_transform.translation;
+
+            let over_water_area: bool =
+                frog_pos.y > 7.0 * TILE_SIZE && frog_pos.y < 12.0 * TILE_SIZE;
+            if over_water_area {
+                let mut on_trunk: bool = false;
+                for (trunk_size, trunk_transform) in trunk_query.iter() {
+                    let trunk_pos: Vec3 = trunk_transform.translation;
+                    let trunk_collision = collide(frog_pos, frog_size.0, trunk_pos, trunk_size.0);
+                    if let Some(_collision) = trunk_collision {
+                        on_trunk = true;
+                    }
+                }
+
+                let mut on_turtle: bool = false;
+                for (turtle_size, turtle_transform) in turtle_query.iter() {
+                    let turtle_pos: Vec3 = turtle_transform.translation;
+                    let turtle_collision =
+                        collide(frog_pos, frog_size.0, turtle_pos, turtle_size.0);
+                    if let Some(_collision) = turtle_collision {
+                        on_turtle = true;
+                    }
+                }
+
+                if !on_trunk && !on_turtle {
+                    ev_gameover.send(GameOverEvent {
+                        message: "frog has fall in the water".to_string(),
+                    });
+                }
+            }
         }
     }
 }
